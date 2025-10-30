@@ -12,6 +12,7 @@ A Docker Compose setup for running WordPress with Nginx, PHP-FPM, MySQL, and com
 - **Web Server**: Nginx (latest)
 - **Monitoring**:
   - Prometheus
+  - Grafana mimir (storing metrics)
   - Node Exporter (system metrics)
   - MySQLd Exporter (database metrics)
   - Nginx Exporter (web server metrics)
