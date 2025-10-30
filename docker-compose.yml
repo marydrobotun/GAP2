@@ -98,6 +98,18 @@ services:
     networks:
       - wp_network
     restart: unless-stopped
+    
+  mimir:
+    image: grafana/mimir:latest
+    container_name: mimir
+    ports:
+      - "9009:9009"
+    volumes:
+      - ./mimir.yml:/etc/mimir/mimir.yaml
+    command: --config.file=/etc/mimir/mimir.yaml
+    networks:
+      - wp_network
+    restart: unless-stopped
 
 
   prometheus:
@@ -114,11 +126,28 @@ services:
       - mysqld-exporter
       - nginx-exporter
       - blackbox-exporter
+      - mimir
     restart: unless-stopped
-
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "--log.level=debug"
+      
+  grafana:
+    image: grafana/grafana-enterprise
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    networks:
+      - wp_network
+    depends_on:
+      - mimir
+    restart: unless-stopped
+    volumes:
+      - grafana-storage:/var/lib/grafana
 
 volumes:
   mysql_data:
+  grafana-storage:
 
 networks:
   wp_network:
